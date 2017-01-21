@@ -21,7 +21,7 @@ class Card():
             raise Exception('The suit provided is invalid')
 
     def __repr__(self):
-        return self.rank + ' of ' + self.suit if self.rank and self.suit else 'Poker'
+        return '{0} of {1}'.format(self.rank, self.suit) if self.rank and self.suit else 'Poker' # noqa
 
 
 class Pack():
@@ -39,6 +39,10 @@ class Pack():
                     self.add_to_pack(Card(rank=rank, suit=suit))
             if self.size == 54:
                 self.add_to_pack(Card(joker=True), quantity=2)
+        self.shuffle()
+
+    def __repr__(self):
+        return '{0} Pack with {1} cards'.format(self.size, len(self.cards))
 
     def add_to_pack(self, card, quantity=1):
         if not isinstance(card, Card):
@@ -49,10 +53,20 @@ class Pack():
             for _ in xrange(quantity-1):
                self.cards.append(card)
 
+    def shuffle(self):
+        return random.shuffle(self.cards)
 
 
-    def __repr__(self):
-        return '{0} Pack with {1} cards'.format(self.size, len(self.cards)) 
+class Player():
+    def __init__(self, name):
+        self.name = name
+
+
+class Game():
+    def __init__(self, pack, players):
+        self.pack = pack
+        self.players = players
+
 
 pak=Pack(54)
 
