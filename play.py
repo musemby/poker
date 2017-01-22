@@ -60,6 +60,8 @@ class Pack():
     def shuffle(self):
         random.shuffle(self.cards)
 
+    def pick(self):
+        return self.cards.pop()
 
 class Player():
     def __init__(self, number, name):
@@ -102,7 +104,6 @@ class Game():
                 card = random.choice(self.pack.cards)
                 self.pack.remove_from_pack(card)
                 player.receive_card(card)
-
     
 
 
