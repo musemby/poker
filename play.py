@@ -103,6 +103,8 @@ class Game():
                 self.pack.remove_from_pack(card)
                 player.receive_card(card)
 
+    
+
 
 if __name__ == '__main__':
     game = Game()
