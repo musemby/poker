@@ -1,2 +1,2 @@
 # poker
-Show thy poker face.
+Poker ya mtaani
