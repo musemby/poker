@@ -54,6 +54,10 @@ class Pack():
             for _ in xrange(quantity-1):
                self.cards.append(card)
 
+    @property
+    def count(self):
+        return len(self.cards)
+
     def remove_from_pack(self, card):
         self.cards.remove(card)
 
