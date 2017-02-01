@@ -45,6 +45,10 @@ class Pack():
     def __repr__(self):
         return '{0} Pack with {1} cards'.format(self.size, len(self.cards))
 
+    @property
+    def count(self):
+        return len(self.cards)
+
     def add_to_pack(self, card, quantity=1):
         if not isinstance(card, Card):
             raise Exception('You can only add a card to the pack')
@@ -54,10 +58,6 @@ class Pack():
             for _ in xrange(quantity-1):
                self.cards.append(card)
 
-    @property
-    def count(self):
-        return len(self.cards)
-
     def remove_from_pack(self, card):
         self.cards.remove(card)
 
@@ -66,6 +66,11 @@ class Pack():
 
     def pick(self):
         return self.cards.pop()
+
+    def pick_random(self):
+        card = random.choice(self.cards)
+        self.remove_from_pack(card)
+        return card
 
 class Player():
     def __init__(self, number, name):
@@ -105,9 +110,7 @@ class Game():
     def deal(self, pack, players):
         for _ in xrange(4):
             for player in players:
-                card = random.choice(self.pack.cards)
-                self.pack.remove_from_pack(card)
-                player.receive_card(card)
+                player.receive_card(self.pack.pick_random())
     
 
 
