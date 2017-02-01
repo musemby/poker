@@ -74,6 +74,7 @@ class Pack():
         self.remove_from_pack(card)
         return card
 
+
 class Player():
     def __init__(self, number, name):
         self.number = number
@@ -120,6 +121,7 @@ class Game():
             name = click.prompt('Hello player {}, what is your name?'.format(num))
             self.players.append(Player(num, name))
 
+        self.pick_starter()
         self.deal(self.pack, self.players)
 
     def deal(self, pack, players):
@@ -134,6 +136,14 @@ class Game():
         click.secho('\nAll players ready?',fg='blue')
         count_down(3)
 
+    def pick_starter(self):
+        card = random.choice(self.pack.cards)
+        if card.rank in [str(r) for r in list(range(9,11)) + list(range(4,8))]:
+            self.pack.remove_from_pack(card)
+            self.stage.cards.append(card)
+            return
+        self.pick_starter()
+
 if __name__ == '__main__':
     game = Game()
-    # import pdb; pdb.set_trace()
+    import pdb; pdb.set_trace()
