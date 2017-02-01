@@ -4,7 +4,7 @@ import time
 import click
 
 
-ranks = ['ace', 'king', 'queen', 'jack'] + [str(num) for num in range(2, 11)]
+ranks = ['A', 'K', 'Q', 'J'] + [str(num) for num in range(2, 11)]
 suits = ['clubs', 'diamonds', 'hearts', 'spades']
 
 class Card():
@@ -39,9 +39,9 @@ class Pack():
         if len(self.cards) < self.size:
             for rank in ranks:
                 for suit in suits:
-                    self.add_to_pack(Card(rank=rank, suit=suit))
+                    self.add(Card(rank=rank, suit=suit))
             if self.size == 54:
-                self.add_to_pack(Card(joker=True), quantity=2)
+                self.add(Card(joker=True), quantity=2)
         self.shuffle()
 
     def __repr__(self):
@@ -51,7 +51,7 @@ class Pack():
     def count(self):
         return len(self.cards)
 
-    def add_to_pack(self, card, quantity=1):
+    def add(self, card, quantity=1):
         if not isinstance(card, Card):
             raise Exception('You can only add a card to the pack')
 
@@ -60,7 +60,7 @@ class Pack():
             for _ in range(quantity-1):
                self.cards.append(card)
 
-    def remove_from_pack(self, card):
+    def remove(self, card):
         self.cards.remove(card)
 
     def shuffle(self):
@@ -71,7 +71,7 @@ class Pack():
 
     def pick_random(self):
         card = random.choice(self.cards)
-        self.remove_from_pack(card)
+        self.remove(card)
         return card
 
 
@@ -91,6 +91,9 @@ class Player():
 class Stage():
     def __init__(self):
         self.cards = []
+
+    def add(self, card):
+        self.cards.append(card)
 
 
 def count_down(num):
@@ -139,8 +142,8 @@ class Game():
     def pick_starter(self):
         card = random.choice(self.pack.cards)
         if card.rank in [str(r) for r in list(range(9,11)) + list(range(4,8))]:
-            self.pack.remove_from_pack(card)
-            self.stage.cards.append(card)
+            self.pack.remove(card)
+            self.stage.add(card)
             return
         self.pick_starter()
 
