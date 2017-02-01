@@ -1,5 +1,7 @@
 import random
-import click 
+import time
+
+import click
 
 
 ranks = ['ace', 'king', 'queen', 'jack'] + [str(num) for num in range(2, 11)]
@@ -55,7 +57,7 @@ class Pack():
 
         self.cards.append(card)
         if card.joker:
-            for _ in xrange(quantity-1):
+            for _ in range(quantity-1):
                self.cards.append(card)
 
     def remove_from_pack(self, card):
@@ -85,11 +87,23 @@ class Player():
         self.cards.append(card)
 
 
+class Stage():
+    def __init__(self):
+        self.cards = []
+
+
+def count_down(num):
+    for num in reversed(range(num)):
+        print(num, end='\r')
+        time.sleep(0.5)
+
+
 class Game():
     def __init__(self):
         self.name = click.prompt('Welcome to the table. Let\'s start a new game.\nWhat shall we call it?')
-        click.echo('Welcome to the {} game. Please have a seat.'.format(self.name))
+        click.echo('\nWelcome to the {} game. Please have a seat.'.format(self.name))
         self.pack = Pack(54)
+        self.stage = Stage()
         self.state = ''
         self.play()
 
@@ -97,9 +111,10 @@ class Game():
         return self.name
 
     def play(self):
-        player_count = click.prompt('How many people are at the table?', type=int)
+        player_count = click.prompt('\nHow many people are at the table?', type=int)
 
         self.players = []
+        click.echo('\n')
         for num in range(player_count):
             num = num + 1
             name = click.prompt('Hello player {}, what is your name?'.format(num))
@@ -108,12 +123,17 @@ class Game():
         self.deal(self.pack, self.players)
 
     def deal(self, pack, players):
-        for _ in xrange(4):
+        for _ in range(4):
             for player in players:
                 player.receive_card(self.pack.pick_random())
-    
+                time.sleep(0.5)
+                click.echo('Dealt player {}'.format(player.name))
 
+
+        click.clear()
+        click.secho('\nAll players ready?',fg='blue')
+        count_down(3)
 
 if __name__ == '__main__':
     game = Game()
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
