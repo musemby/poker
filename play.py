@@ -115,6 +115,7 @@ class Game():
         self.stage = Stage()
         self.state = ''
         self.play()
+        self.player_count = len(self.players)
 
     def __repr__(self):
         return self.name
@@ -160,15 +161,17 @@ class Game():
     def game_play(self):
         self.top_card = self.stage.cards[len(self.stage.cards)-1:][0]
         self.current_suit = self.top_card.suit
-
+        self.counter = 0
+        self.round = 1
         while True:
-            self.turn = self.players[0]
-            click.echo("{}, it's your turn to play".format(self.turn.name))
-            picking = "Type 'pick' to pick one card or 'pick(N)' where N is the number of cards to pick\n"
-            placing = "Type 'place(X,Y,Z)' where X, Y and Z are the cards in your hand you want to place on the stage in the desired order"
-            action = click.prompt(picking + placing, type=str)
-            self.process_action(action, self.turn)
-            break
+            for i in range(0, self.player_count):
+                self.current_player = self.players[i]
+                click.echo("{}, it's your turn to play".format(self.current_player.name))
+                picking = "Type 'pick' to pick one card or 'pick(N)' where N is the number of cards to pick\n"
+                placing = "Type 'place(X,Y,Z)' where X, Y and Z are the cards in your hand you want to place on the stage in the desired order"
+                action = click.prompt(picking + placing, type=str)
+                self.process_action(action, self.current_player)
+            self.round = self.round + 1
 
 if __name__ == '__main__':
     game = Game()
