@@ -87,6 +87,11 @@ class Player():
     def receive_card(self, card):
         self.cards.append(card)
 
+    def pick_card(self, game, card=None):
+        if not card:
+            self.cards.append(game.pack.pick())
+        else:
+            self.cards.append()
 
 class Stage():
     def __init__(self):
@@ -146,6 +151,24 @@ class Game():
             self.stage.add(card)
             return
         self.pick_starter()
+
+    def process_action(self, action, player):
+        if action == 'pick':
+            self.pick         
+
+    
+
+    def game_play(self):
+        self.top_card = self.stage.cards[len(self.stage.cards)-1:][0]
+        self.current_suit = self.top_card.suit
+
+        while True:
+            self.turn = self.players[0]
+            click.echo("{}, it's your turn to play".format(self.turn.name))
+            picking = "Type 'pick' to pick one card or 'pick(N)' where N is the number of cards to pick\n"
+            placing = "Type 'place(X,Y,Z)' where X, Y and Z are the cards in your hand you want to place on the stage in the desired order"
+            action = click.prompt(picking + placing, type=str)
+            self.process_action(action, self.turn)
 
 if __name__ == '__main__':
     game = Game()
