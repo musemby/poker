@@ -91,7 +91,7 @@ class Player():
         if not card:
             self.cards.append(game.pack.pick())
         else:
-            self.cards.append()
+            self.cards.append(card)
 
 class Stage():
     def __init__(self):
@@ -154,8 +154,7 @@ class Game():
 
     def process_action(self, action, player):
         if action == 'pick':
-            self.pick         
-
+            player.pick_card(game)
     
 
     def game_play(self):
@@ -169,6 +168,7 @@ class Game():
             placing = "Type 'place(X,Y,Z)' where X, Y and Z are the cards in your hand you want to place on the stage in the desired order"
             action = click.prompt(picking + placing, type=str)
             self.process_action(action, self.turn)
+            break
 
 if __name__ == '__main__':
     game = Game()
