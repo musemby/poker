@@ -1,5 +1,6 @@
 import random
 import time
+import re
 
 import click
 
@@ -87,11 +88,12 @@ class Player():
     def receive_card(self, card):
         self.cards.append(card)
 
-    def pick_card(self, game, card=None):
-        if not card:
-            self.cards.append(game.pack.pick())
+    def pick_card(self, game, number=None):
+        if number:
+            for _ in range(0, number):
+                self.cards.append(game.pack.pick())
         else:
-            self.cards.append(card)
+            self.cards.append(game.pack.pick())
 
 class Stage():
     def __init__(self):
@@ -115,23 +117,24 @@ class Game():
         self.stage = Stage()
         self.state = ''
         self.play()
-        self.player_count = len(self.players)
+        self.player_count = 0
 
     def __repr__(self):
         return self.name
 
     def play(self):
-        player_count = click.prompt('\nHow many people are at the table?', type=int)
+        self.player_count = click.prompt('\nHow many people are at the table?', type=int)
 
         self.players = []
         click.echo('\n')
-        for num in range(player_count):
+        for num in range(self.player_count):
             num = num + 1
             name = click.prompt('Hello player {}, what is your name?'.format(num))
             self.players.append(Player(num, name))
 
         self.pick_starter()
         self.deal(self.pack, self.players)
+        self.game_play()
 
     def deal(self, pack, players):
         for _ in range(4):
@@ -154,9 +157,13 @@ class Game():
         self.pick_starter()
 
     def process_action(self, action, player):
-        if action == 'pick':
-            player.pick_card(game)
-    
+        check = re.match('pick\-[\d]{1,}', action)
+        if check:
+            num=int(action.partition('-')[-1])
+            player.pick_card(self, number=num)
+        elif action == 'pick':
+            player.pick_card(self)
+
 
     def game_play(self):
         self.top_card = self.stage.cards[len(self.stage.cards)-1:][0]
@@ -167,11 +174,14 @@ class Game():
             for i in range(0, self.player_count):
                 self.current_player = self.players[i]
                 click.echo("{}, it's your turn to play".format(self.current_player.name))
-                picking = "Type 'pick' to pick one card or 'pick(N)' where N is the number of cards to pick\n"
+                picking = "Type 'pick' to pick one card or 'pick-N' where N is the number of cards to pick\n"
                 placing = "Type 'place(X,Y,Z)' where X, Y and Z are the cards in your hand you want to place on the stage in the desired order"
                 action = click.prompt(picking + placing, type=str)
                 self.process_action(action, self.current_player)
+                click.secho('\nYour current hand: ' + str(self.current_player.cards), fg='blue')
+                click.secho('The current top card: ' + str(self.top_card),  fg='blue')
             self.round = self.round + 1
+
 
 if __name__ == '__main__':
     game = Game()
