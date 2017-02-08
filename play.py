@@ -25,7 +25,8 @@ class Card():
             raise Exception('The suit provided is invalid')
 
     def __repr__(self):
-        return '{0} of {1}'.format(self.rank, self.suit) if self.rank and self.suit else 'Poker' # noqa
+        first = self.suit.split()[0][0].upper() if self.suit else None
+        return '{0} of {1} [{0}{2}]'.format(self.rank, self.suit, first) if self.rank and self.suit else 'Poker' # noqa
 
 
 class Pack():
