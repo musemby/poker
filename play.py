@@ -165,7 +165,7 @@ class Game():
 
     def process_action(self, action, player):
         pick_sth = re.match('pick\-[\d]{1,}', action)
-        # place = validate_card_code(action)
+
         if pick_sth:
             num=int(action.partition('-')[-1])
             player.pick_card(self, number=num)
@@ -179,11 +179,11 @@ class Game():
                         if code == card_code or code == card_code.lower():
                             player.give_card(card)
                             self.stage.add(card)
+
         actions = action.split(' ')
         if len(actions) > 1:
             for act in actions:
                 self.process_action(act, player)
-
 
     def game_play(self):
         self.top_card = self.stage.cards[len(self.stage.cards)-1:][0]
