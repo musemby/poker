@@ -165,20 +165,20 @@ class Game():
 
     def process_action(self, action, player):
         pick_sth = re.match('pick\-[\d]{1,}', action)
-        place = validate_card_code(action)
+        # place = validate_card_code(action)
         if pick_sth:
             num=int(action.partition('-')[-1])
             player.pick_card(self, number=num)
         elif action == 'pick':
             player.pick_card(self)
-        elif place:
-            in_code = action.split('-')[-1]
-            for card in player.cards:
-                card_code = card.code
-                if in_code == card_code or in_code == card_code.lower():
-                    player.give_card(card)
-                    self.stage.add(card)
-
+        else:
+            for code in action.split(','):
+                if validate_card_code(code):
+                    for card in player.cards:
+                        card_code = card.code
+                        if code == card_code or code == card_code.lower():
+                            player.give_card(card)
+                            self.stage.add(card)
 
     def game_play(self):
         self.top_card = self.stage.cards[len(self.stage.cards)-1:][0]
@@ -194,7 +194,7 @@ class Game():
                 click.secho('The current top card: [...' + str(str(self.stage.cards[-1])) +']',  fg='blue')
 
                 picking = "Type 'pick' to pick one card or 'pick-N' where N is the number of cards to pick\n"
-                placing = "Type 'place-X,Y,Z' where X, Y and Z are the cards in your hand you want to place on the stage in the desired order"
+                placing = "Type 'X,Y,Z' where X, Y and Z are the codes of cards in your hand you want to place on the stage in the desired order e.g '6C'"
                 action = click.prompt(picking + placing, type=str)
                 self.process_action(action, self.current_player)
 
@@ -205,4 +205,3 @@ class Game():
 
 if __name__ == '__main__':
     game = Game()
-    import pdb; pdb.set_trace()
