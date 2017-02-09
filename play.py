@@ -120,12 +120,14 @@ class Stage():
         if card.joker or card.rank == 'A': # special cards
             player.give_card(card)
             self.cards.append(card)
+            return True
         elif self.top.suit == card.suit or self.top.rank == card.rank: # normal matching
             player.give_card(card)
             self.cards.append(card)
+            return True
         else:
             print('Sorry, placing this card is not a valid move')
-            return
+            return False
 
 
 
@@ -186,11 +188,11 @@ class Game():
             player.pick_card(self)
         else:
             for code in action.split(','):
-                if validate_card_code(code):
+                if validate_card_code(code) or code.startswith('10'):
                     for card in player.cards:
                         card_code = card.code
                         if code == card_code or code == card_code.lower():
-                            self.stage.add(card, player)
+                            return self.stage.add(card, player)
 
         actions = action.split(' ')
         if len(actions) > 1:
