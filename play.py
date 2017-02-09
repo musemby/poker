@@ -15,6 +15,12 @@ class Card():
         self.suit = suit
         self.joker = joker
 
+        if self.joker:
+            self.code = 'JO'
+        else:
+            self.su = self.suit.split()[0][0].upper()
+            self.code =  self.rank + self.su
+
         if self.joker and (self.suit or self.rank):
             raise Exception('A joker card cannot have a suit or rank')
 
@@ -25,8 +31,7 @@ class Card():
             raise Exception('The suit provided is invalid')
 
     def __repr__(self):
-        first = self.suit.split()[0][0].upper() if self.suit else None
-        return '{0} of {1} [{0}{2}]'.format(self.rank, self.suit, first) if self.rank and self.suit else 'Poker' # noqa
+        return '{0} of {1} [{2}]'.format(self.rank, self.suit, self.code) if self.rank and self.suit else 'Poker [{}]'.format(self.code) # noqa
 
 
 class Pack():
@@ -164,6 +169,7 @@ class Game():
             player.pick_card(self, number=num)
         elif action == 'pick':
             player.pick_card(self)
+        # elif action == 'place-'
 
 
     def game_play(self):
@@ -176,7 +182,7 @@ class Game():
                 self.current_player = self.players[i]
                 click.echo("{}, it's your turn to play".format(self.current_player.name))
                 picking = "Type 'pick' to pick one card or 'pick-N' where N is the number of cards to pick\n"
-                placing = "Type 'place(X,Y,Z)' where X, Y and Z are the cards in your hand you want to place on the stage in the desired order"
+                placing = "Type 'place-X,Y,Z' where X, Y and Z are the cards in your hand you want to place on the stage in the desired order"
                 action = click.prompt(picking + placing, type=str)
                 self.process_action(action, self.current_player)
                 click.secho('\nYour current hand: ' + str(self.current_player.cards), fg='blue')
