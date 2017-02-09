@@ -112,8 +112,21 @@ class Stage():
     def __init__(self):
         self.cards = []
 
-    def add(self, card):
+    def add_starter(self, card):
         self.cards.append(card)
+
+    def add(self, card, player):
+        self.top = self.cards[-1]
+        if card.joker or card.rank == 'A': # special cards
+            player.give_card(card)
+            self.cards.append(card)
+        elif self.top.suit == card.suit or self.top.rank == card.rank: # normal matching
+            player.give_card(card)
+            self.cards.append(card)
+        else:
+            print('Sorry, placing this card is not a valid move')
+            return
+
 
 
 class Game():
@@ -147,7 +160,7 @@ class Game():
         for _ in range(4):
             for player in players:
                 player.receive_card(self.pack.pick_random())
-                time.sleep(0.5)
+                time.sleep(0.3)
                 click.echo('Dealt player {}'.format(player.name))
 
 
@@ -159,7 +172,7 @@ class Game():
         card = random.choice(self.pack.cards)
         if card.rank in [str(r) for r in list(range(9,11)) + list(range(4,8))]:
             self.pack.remove(card)
-            self.stage.add(card)
+            self.stage.add_starter(card)
             return
         self.pick_starter()
 
@@ -177,8 +190,7 @@ class Game():
                     for card in player.cards:
                         card_code = card.code
                         if code == card_code or code == card_code.lower():
-                            player.give_card(card)
-                            self.stage.add(card)
+                            self.stage.add(card, player)
 
         actions = action.split(' ')
         if len(actions) > 1:
