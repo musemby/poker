@@ -101,6 +101,10 @@ class Player():
         else:
             self.cards.append(game.pack.pick())
 
+    def give_card(self, card):
+        self.cards.remove(card)
+
+
 class Stage():
     def __init__(self):
         self.cards = []
@@ -163,13 +167,21 @@ class Game():
         self.pick_starter()
 
     def process_action(self, action, player):
-        check = re.match('pick\-[\d]{1,}', action)
-        if check:
+        pick_sth = re.match('pick\-[\d]{1,}', action)
+        place = re.match('place\-[a,A,k,K,q,Q,j,J,10]{0,1}[2-9]{0,1}[o,O,c,C,d,D,h,H,s,S]', action)
+        if pick_sth:
             num=int(action.partition('-')[-1])
             player.pick_card(self, number=num)
         elif action == 'pick':
             player.pick_card(self)
-        # elif action == 'place-'
+        elif place:
+            in_code = action.split('-')[-1]
+            for card in player.cards:
+                card_code = card.code
+                if in_code == card_code or in_code == card_code.lower():
+                    # import pdb; pdb.set_trace()
+                    player.give_card(card)
+                    self.stage.add(card)
 
 
     def game_play(self):
@@ -180,13 +192,18 @@ class Game():
         while True:
             for i in range(0, self.player_count):
                 self.current_player = self.players[i]
-                click.echo("{}, it's your turn to play".format(self.current_player.name))
+                click.secho("{}, it's your turn to play".format(self.current_player.name), fg='red')
+
+                click.secho('\nYour current hand: ' + str(self.current_player.cards), fg='blue')
+                click.secho('The current top card: [...' + str(str(self.stage.cards[-1])) +']',  fg='blue')
+
                 picking = "Type 'pick' to pick one card or 'pick-N' where N is the number of cards to pick\n"
                 placing = "Type 'place-X,Y,Z' where X, Y and Z are the cards in your hand you want to place on the stage in the desired order"
                 action = click.prompt(picking + placing, type=str)
                 self.process_action(action, self.current_player)
+
                 click.secho('\nYour current hand: ' + str(self.current_player.cards), fg='blue')
-                click.secho('The current top card: ' + str(self.top_card),  fg='blue')
+                click.secho('The current top card: ' + str(self.stage.cards[-1]),  fg='blue')
             self.round = self.round + 1
 
 
