@@ -4,6 +4,8 @@ import re
 
 import click
 
+from validators import validate_card_code
+
 
 ranks = ['A', 'K', 'Q', 'J'] + [str(num) for num in range(2, 11)]
 suits = ['clubs', 'diamonds', 'hearts', 'spades']
@@ -168,7 +170,7 @@ class Game():
 
     def process_action(self, action, player):
         pick_sth = re.match('pick\-[\d]{1,}', action)
-        place = re.match('place\-[a,A,k,K,q,Q,j,J,10]{0,1}[2-9]{0,1}[o,O,c,C,d,D,h,H,s,S]', action)
+        place = validate_card_code(action)
         if pick_sth:
             num=int(action.partition('-')[-1])
             player.pick_card(self, number=num)
@@ -179,7 +181,6 @@ class Game():
             for card in player.cards:
                 card_code = card.code
                 if in_code == card_code or in_code == card_code.lower():
-                    # import pdb; pdb.set_trace()
                     player.give_card(card)
                     self.stage.add(card)
 
