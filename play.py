@@ -5,6 +5,7 @@ import re
 import click
 
 from validators import validate_card_code
+from utilities import count_down
 
 
 ranks = ['A', 'K', 'Q', 'J'] + [str(num) for num in range(2, 11)]
@@ -113,12 +114,6 @@ class Stage():
 
     def add(self, card):
         self.cards.append(card)
-
-
-def count_down(num):
-    for num in reversed(range(num)):
-        print(num, end='\r')
-        time.sleep(0.5)
 
 
 class Game():
