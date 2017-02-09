@@ -34,7 +34,7 @@ class Card():
             raise Exception('The suit provided is invalid')
 
     def __repr__(self):
-        return '{0} of {1} [{2}]'.format(self.rank, self.suit, self.code) if self.rank and self.suit else 'Poker [{}]'.format(self.code) # noqa
+        return '{0} of {1} [{2}]'.format(self.rank, self.suit, self.code) if self.rank and self.suit else 'Joker [{}]'.format(self.code) # noqa
 
 
 class Pack():
@@ -179,6 +179,11 @@ class Game():
                         if code == card_code or code == card_code.lower():
                             player.give_card(card)
                             self.stage.add(card)
+        actions = action.split(' ')
+        if len(actions) > 1:
+            for act in actions:
+                self.process_action(act, player)
+
 
     def game_play(self):
         self.top_card = self.stage.cards[len(self.stage.cards)-1:][0]
