@@ -184,8 +184,10 @@ class Game():
         if pick_sth:
             num=int(action.partition('-')[-1])
             player.pick_card(self, number=num)
+            return True
         elif action == 'pick':
             player.pick_card(self)
+            return True
         else:
             for code in action.split(','):
                 if validate_card_code(code) or code.startswith('10'):
@@ -205,21 +207,25 @@ class Game():
         self.counter = 0
         self.round = 1
         while True:
-            for i in range(0, self.player_count):
-                self.current_player = self.players[i]
-                click.secho("{}, it's your turn to play".format(self.current_player.name), fg='red')
+            self.current_player = self.players[self.counter]
+            click.secho("{}, it's your turn to play".format(self.current_player.name), fg='red')
 
-                click.secho('\nYour current hand: ' + str(self.current_player.cards), fg='blue')
-                click.secho('The current top card: [...' + str(str(self.stage.cards[-1])) +']',  fg='blue')
+            click.secho('\nYour current hand: ' + str(self.current_player.cards), fg='blue')
+            click.secho('The current top card: [...' + str(str(self.stage.cards[-1])) +']',  fg='blue')
 
-                picking = "Type 'pick' to pick one card or 'pick-N' where N is the number of cards to pick\n"
-                placing = "Type 'X,Y,Z' where X, Y and Z are the codes of cards in your hand you want to place on the stage in the desired order e.g '6C'"
-                action = click.prompt(picking + placing, type=str)
-                self.process_action(action, self.current_player)
+            picking = "Type 'pick' to pick one card or 'pick-N' where N is the number of cards to pick\n"
+            placing = "Type 'X,Y,Z' where X, Y and Z are the codes of cards in your hand you want to place on the stage in the desired order e.g '6C'"
+            action = click.prompt(picking + placing, type=str)
+            okay = self.process_action(action, self.current_player)
 
-                click.secho('\nYour current hand: ' + str(self.current_player.cards), fg='blue')
-                click.secho('The current top card: ' + str(self.stage.cards[-1]),  fg='blue')
-            self.round = self.round + 1
+            click.secho('\nYour current hand: ' + str(self.current_player.cards), fg='blue')
+            click.secho('The current top card: ' + str(self.stage.cards[-1]),  fg='blue')
+            if okay:
+                self.round += 1
+                if self.counter < self.player_count-1:
+                    self.counter += 1
+                else:
+                    self.counter = 0
 
 
 if __name__ == '__main__':
