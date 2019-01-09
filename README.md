@@ -1,2 +1,2 @@
 # poker
-Poker ya mtaani
+Poker ya mtaani(CLI based)
